@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更年期症状自我评估问卷</title>
+    <style>
+        * {
+            margin: 0;
+            padding:0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe4ec 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(255, 105, 180, 0.1);
+        }
+        .header h1 {
+            color: #e91e63;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .notice {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #e65100;
+        }
+        .progress-bar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        .progress-track {
+            height: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e91e63, #ff5722);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            display: none;
+        }
+        .question-card.active {
+            display: block;
+        }
+        .question-number {
+            display: inline-block;
+            background: #e91e63;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .question-title {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+            color: #333;
+        }
+        .option:hover {
+            border-color: #e91e63;
+            background: #fce4ec;
+        }
+        .option.selected {
+            border-color: #e91e63;
+            background: #e91e63;
+            color: white;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-prev {
+            background: #f5f5f5;
+            color: #666;
+        }
+        .btn-next {
+            background: #e91e63;
+            color: white;
+        }
+        .btn-prev:hover {
+            background: #eee;
+        }
+        .btn-next:hover {
+            background: #c2185b;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        /* 结果页 */
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 105, 180, 0.15);
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e91e63, #ff5722);
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .score-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .result-level {
+            font-size: 22px;
+            font-weight: bold;
+            color: #e91e63;
+            margin-bottom: 15px;
+        }
+        .result-desc {
+            text-align: left;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #555;
+        }
+        .product-card {
+            background: linear-gradient(135deg, #fce4ec, #fff3e0);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        .product-card h3 {
+            color: #e91e63;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .product-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .product-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 14px;
+            color: #555;
+        }
+        .product-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #e91e63;
+            font-weight: bold;
+        }
+        .contact-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .contact-section h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .contact-section input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .contact-section input:focus {
+            border-color: #e91e63;
+            outline: none;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(90deg, #e91e63, #ff5722);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+        .warning {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #f57c00;
+            text-align: left;
+        }
+        .section-title {
+            font-size: 16px;
+            color: #e91e63;
+            font-weight: bold;
+            margin: 25px 0 15px;
+            padding-left: 10px;
+            border-left: 3px solid #e91e63;
+        }
+        @media (max-width: 400px) {
+            .header h1 { font-size: 20px; }
+            .question-title { font-size: 15px; }
+            .option { font-size: 14px; padding: 12px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>🌸 更年期症状自我评估问卷</h1>
+            <p>本问卷共55道题，帮助您了解更年期症状严重程度<br>请根据最近一个月的实际感受作答</p>
+            <div class="notice">
+                ⚠️ 本问卷仅供自我评估参考，不能替代专业医疗诊断。如有明显不适，请立即就医。
+            </div>
+        </div>
+
+        <!-- 进度条 -->
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-text">
+                <span>答题进度</span>
+                <span id="progressText">0/55</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- 问卷表单 -->
+        <form id="surveyForm">
+            <!-- 题目将通过JS动态生成 -->
+        </form>
+
+        <!-- 结果页 -->
+        <div id="resultPage" style="display: none;">
+            <div class="result-card">
+                <div class="score-circle">
+                    <div>
+                        <div class="score-number" id="finalScore">0</div>
+                        <div class="score-label">总分/200</div>
+                    </div>
+                </div>
+                
+                <div class="result-level" id="resultLevel">症状程度</div>
+                
+                <div class="result-desc" id="resultDesc">
+                    评估建议将在这里显示
+                </div>
+
+                <div class="product-card">
+                    <h3>🌿 藻巢 - 科学养护卵巢</h3>
+                    <ul>
+                        <li>林蛙卵肽：抗击卵巢卵泡凋亡</li>
+                        <li>虾青素：强效抗氧化，清除自由基</li>
+                        <li>沙棘提取物：抗炎抗氧化，保护心血管</li>
+                        <li>鱼胶原蛋白肽：滋养皮肤，延缓衰老</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-size: 13px; color: #888;">
+                        藻巢帮助您优雅度过更年期
+                    </p>
+                </div>
+
+                <div class="contact-section">
+                    <h4>📱 获取专属健康建议</h4>
+                    <p style="font-size: 13px; color: #888; margin-bottom: 15px;">填写联系方式，我们将为您提供一对一健康顾问服务</p>
+                    <input type="text" id="userName" placeholder="您的姓名">
+                    <input type="tel" id="userPhone" placeholder="手机号码">
+                    <input type="text" id="userWechat" placeholder="微信号（选填）">
+                    <button type="button" class="btn-submit" onclick="submitResult()">提交并获取建议</button>
+                </div>
+
+                <div class="warning">
+                    ⚠️ 重要提示：本评估结果仅供参考，不构成医疗建议。更年期症状受多种因素影响，如有明显不适请及时就医。建议35岁以上女性每年进行一次妇科检查。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 完整题目数据
+        const questions = [
+            // 基本信息部分（不计分）
+            { id: 1, type: 'text', title: '您的姓名', section: '基本信息' },
+            { id: 2, type: 'choice', title: '您的年龄', options: ['35-40岁', '41-45岁', '46-50岁', '51-55岁', '56-60岁', '61-65岁'], section: '基本信息', noScore: true },
+            { id: 3, type: 'choice', title: '您的月收入水平', options: ['3000元以下', '3000-5000元', '5000-10000元', '10000-20000元', '20000元以上'], section: '基本信息', noScore: true },
+            { id: 4, type: 'choice', title: '您的联系方式类型', options: ['手机号码', '微信号'], section: '基本信息', noScore: true },
+            { id: 5, type: 'text', title: '请填写您的联系方式', section: '基本信息' },
+            
+            // 血管舒缩症状
+            { id: 6, type: 'choice', title: '您是否出现潮热（突然感到身体发热）？', options: ['从不出现', '偶尔出现，每周少于1次', '经常出现，每周1-3次', '频繁出现，每周4-7次', '持续出现，每天多次'], section: '血管舒缩症状' },
+            { id: 7, type: 'choice', title: '潮热症状通常持续多长时间？', options: ['无潮热症状', '少于1分钟', '1-3分钟', '3-5分钟', '超过5分钟'], section: '血管舒缩症状' },
+            { id: 8, type: 'choice', title: '潮热症状是否伴随出汗？', options: ['无此症状', '偶尔出汗，量少', '经常出汗，需擦汗', '大量出汗，需更换衣物', '严重出汗，影响日常生活'], section: '血管舒缩症状' },
+            { id: 9, type: 'choice', title: '您是否出现夜间盗汗？', options: ['从不出现', '偶尔出现，不影响睡眠', '经常出现，偶尔影响睡眠', '频繁出现，经常影响睡眠', '严重出汗，需更换床单衣物'], section: '血管舒缩症状' },
+            { id: 10, type: 'choice', title: '潮热出汗症状是否影响您的日常活动？', options: ['无此症状', '几乎不影响', '轻度影响', '明显影响', '严重影响，无法正常活动'], section: '血管舒缩症状' },
+            
+            // 睡眠障碍
+            { id: 11, type: 'choice', title: '您入睡是否困难？', options: ['没有困难', '偶尔困难，30分钟内能入睡', '经常困难，30-60分钟才能入睡', '很困难，需要1-2小时才能入睡', '非常困难，超过2小时或整夜无法入睡'], section: '睡眠障碍' },
+            { id: 12, type: 'choice', title: '您夜间是否会频繁醒来？', options: ['不会，一觉到天亮', '偶尔醒来1次', '经常醒来2-3次', '频繁醒来4-5次', '整夜无法连续睡眠'], section: '睡眠障碍' },
+            { id: 13, type: 'choice', title: '醒来后是否难以再次入睡？', options: ['不存在此问题', '能很快再次入睡', '需要较长时间才能再次入睡', '很难再次入睡，辗转反侧', '基本无法再次入睡'], section: '睡眠障碍' },
+            { id: 14, type: 'choice', title: '您对睡眠质量的整体评价？', options: ['睡眠质量很好', '睡眠质量一般', '睡眠质量较差', '睡眠质量很差', '睡眠质量极差，感觉没睡'], section: '睡眠障碍' },
+            { id: 15, type: 'choice', title: '您是否感到睡眠不足导致的疲劳？', options: ['没有疲劳感', '偶尔感到疲劳', '经常感到疲劳', '持续感到疲劳', '严重疲劳，影响日常功能'], section: '睡眠障碍' },
+            { id: 16, type: 'choice', title: '您是否需要依赖药物或助眠方式入睡？', options: ['不需要', '偶尔需要', '经常需要', '几乎每晚需要', '必须依赖，否则无法入睡'], section: '睡眠障碍' },
+            { id: 17, type: 'choice', title: '您是否出现早醒（比预期早2小时以上）？', options: ['从不出现', '偶尔出现', '经常出现', '频繁出现', '几乎每天出现'], section: '睡眠障碍' },
+            
+            // 情绪变化
+            { id: 18, type: 'choice', title: '您是否感到情绪波动大，容易激动？', options: ['没有此情况', '偶尔出现', '经常出现', '频繁出现', '持续出现，无法控制'], section: '情绪变化' },
+            { id: 19, type: 'choice', title: '您是否容易感到烦躁、易怒？', options: ['从不出现', '偶尔出现', '经常出现', '频繁出现', '持续出现，影响人际关系'], section: '情绪变化' },
+            { id: 20, type: 'choice', title: '您是否容易感到焦虑、紧张？', options: ['从不出现', '偶尔出现', '经常出现', '频繁出现', '严重焦虑，影响生活'], section: '情绪变化' },
+            { id: 21, type: 'choice', title: '您是否感到情绪低落、抑郁？', options: ['从不出现', '偶尔出现', '经常出现', '频繁出现', '持续抑郁，有消极想法'], section: '情绪变化' },
+            { id: 22, type: 'choice', title: '您是否感到记忆力下降、注意力不集中？', options: ['没有此情况', '偶尔出现，不影响工作', '经常出现，轻度影响工作', '频繁出现，明显影响工作', '严重影响，无法完成日常任务'], section: '情绪变化' },
+            { id: 23, type: 'choice', title: '您是否对以前感兴趣的事物失去兴趣？', options: ['没有此情况', '兴趣略有下降', '兴趣明显下降', '兴趣大幅下降', '完全失去兴趣'], section: '情绪变化' },
+            { id: 24, type: 'choice', title: '您是否容易哭泣或感到悲伤？', options: ['从不出现', '偶尔出现', '经常出现', '频繁出现', '几乎每天出现'], section: '情绪变化' },
+            { id: 25, type: 'choice', title: '您是否感到自我价值降低或自信心下降？', options: ['没有此情况', '偶尔出现', '经常出现', '频繁出现', '持续出现，自我否定'], section: '情绪变化' },
+            
+            // 泌尿生殖系统症状
+            { id: 26, type: 'choice', title: '您是否出现阴道干燥不适？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续出现，严重影响生活'], section: '泌尿生殖系统症状' },
+            { id: 27, type: 'choice', title: '您是否感到性生活时不适或疼痛？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '每次都出现，回避性生活'], section: '泌尿生殖系统症状' },
+            { id: 28, type: 'choice', title: '您是否出现性欲下降？', options: ['没有此变化', '略有下降', '明显下降', '大幅下降', '完全丧失'], section: '泌尿生殖系统症状' },
+            { id: 29, type: 'choice', title: '您是否出现尿频、尿急？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '严重尿频，影响外出活动'], section: '泌尿生殖系统症状' },
+            { id: 30, type: 'choice', title: '您是否出现夜尿增多？', options: ['没有此症状', '偶尔出现，1次/晚', '经常出现，2-3次/晚', '频繁出现，4-5次/晚', '严重夜尿，超过5次/晚'], section: '泌尿生殖系统症状' },
+            { id: 31, type: 'choice', title: '您是否出现尿失禁（咳嗽、打喷嚏时漏尿）？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '严重尿失禁，需使用护垫'], section: '泌尿生殖系统症状' },
+            { id: 32, type: 'choice', title: '您是否反复出现泌尿系统感染？', options: ['从没有', '偶尔出现', '每年1-2次', '每年3-4次', '频繁出现，每年超过4次'], section: '泌尿生殖系统症状' },
+            { id: 33, type: 'choice', title: '您是否出现外阴瘙痒或不适？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续出现，严重影响生活'], section: '泌尿生殖系统症状' },
+            
+            // 心血管系统症状
+            { id: 34, type: 'choice', title: '您是否感到心悸、心跳加速？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续出现，需要就医'], section: '心血管系统症状' },
+            { id: 35, type: 'choice', title: '您是否出现血压波动？', options: ['血压正常稳定', '偶尔波动', '经常波动', '频繁波动', '血压不稳定，需要药物控制'], section: '心血管系统症状' },
+            { id: 36, type: 'choice', title: '您是否感到胸闷、气短？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续出现，影响日常活动'], section: '心血管系统症状' },
+            { id: 37, type: 'choice', title: '您是否出现头晕、头痛？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续出现，影响生活'], section: '心血管系统症状' },
+            { id: 38, type: 'choice', title: '您是否感到四肢末端麻木或刺痛？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续出现，影响日常活动'], section: '心血管系统症状' },
+            { id: 39, type: 'choice', title: '您是否出现面部或下肢浮肿？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续浮肿，需就医'], section: '心血管系统症状' },
+            
+            // 骨关节症状
+            { id: 40, type: 'choice', title: '您是否感到关节疼痛或僵硬？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续疼痛，影响活动'], section: '骨关节症状' },
+            { id: 41, type: 'choice', title: '您是否感到腰背疼痛？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续疼痛，影响日常活动'], section: '骨关节症状' },
+            { id: 42, type: 'choice', title: '您是否出现肌肉酸痛或乏力？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续酸痛，影响生活'], section: '骨关节症状' },
+            { id: 43, type: 'choice', title: '您是否感到关节活动受限？', options: ['没有此症状', '偶尔受限', '经常受限', '明显受限', '严重受限，需辅助器具'], section: '骨关节症状' },
+            { id: 44, type: 'choice', title: '您是否容易发生骨折或骨裂？', options: ['从未发生', '有过轻微骨折', '发生过1-2次骨折', '发生过3次以上骨折', '骨质疏松严重，多次骨折'], section: '骨关节症状' },
+            { id: 45, type: 'choice', title: '您是否出现身高变矮或驼背？', options: ['没有此变化', '轻微变矮（1-2厘米）', '明显变矮（2-3厘米）', '严重变矮（超过3厘米）', '明显驼背，身高大幅下降'], section: '骨关节症状' },
+            
+            // 皮肤与外貌变化
+            { id: 46, type: 'choice', title: '您是否感到皮肤干燥、瘙痒？', options: ['没有此症状', '偶尔出现', '经常出现', '频繁出现', '持续瘙痒，影响睡眠'], section: '皮肤与外貌变化' },
+            { id: 47, type: 'choice', title: '您是否出现皮肤弹性下降、皱纹增多？', options: ['没有明显变化', '轻微变化', '明显变化', '变化较大', '严重老化，影响自信'], section: '皮肤与外貌变化' },
+            { id: 48, type: 'choice', title: '您是否出现脱发或头发变稀？', options: ['没有明显变化', '轻微脱发', '明显脱发', '大量脱发', '严重脱发，可见头皮'], section: '皮肤与外貌变化' },
+            { id: 49, type: 'choice', title: '您是否出现皮肤色素沉着或老年斑？', options: ['没有出现', '少量出现', '较多出现', '大量出现', '严重影响外观'], section: '皮肤与外貌变化' },
+            { id: 50, type: 'choice', title: '您是否感到指甲变脆、易断裂？', options: ['没有此情况', '偶尔出现', '经常出现', '频繁出现', '严重变脆，影响生活'], section: '皮肤与外貌变化' },
+            
+            // 体重与代谢变化
+            { id: 51, type: 'choice', title: '您是否出现体重增加，尤其是腹部脂肪堆积？', options: ['体重稳定', '轻微增加（1-2公斤）', '明显增加（2-5公斤）', '大幅增加（5-10公斤）', '严重增加（超过10公斤）'], section: '体重与代谢变化' },
+            { id: 52, type: 'choice', title: '您是否感到食欲变化（暴食或厌食）？', options: ['食欲正常', '偶尔变化', '经常变化', '频繁变化', '严重变化，影响健康'], section: '体重与代谢变化' },
+            { id: 53, type: 'choice', title: '您是否出现代谢减慢，即使控制饮食体重仍增加？', options: ['没有此情况', '偶尔出现', '经常出现', '频繁出现', '持续出现，难以控制体重'], section: '体重与代谢变化' },
+            { id: 54, type: 'choice', title: '您是否出现血糖波动或血糖升高？', options: ['血糖正常稳定', '偶尔波动', '经常波动', '血糖偏高，需饮食控制', '确诊糖尿病，需药物治疗'], section: '体重与代谢变化' },
+            { id: 55, type: 'choice', title: '您是否感到体力明显下降，容易疲劳？', options: ['体力正常', '轻微下降', '明显下降', '大幅下降', '严重下降，无法完成日常活动'], section: '体重与代谢变化' }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+
+        // 初始化问卷
+        function initSurvey() {
+            const form = document.getElementById('surveyForm');
+            let currentSection = '';
+            
+            questions.forEach((q, index) => {
+                // 添加分节标题
+                if (q.section && q.section !== currentSection) {
+                    currentSection = q.section;
+                    const sectionDiv = document.createElement('div');
+                    sectionDiv.className = 'section-title';
+                    sectionDiv.textContent = currentSection;
+                    form.appendChild(sectionDiv);
+                }
+                
+                const card = document.createElement('div');
+                card.className = `question-card ${index === 0 ? 'active' : ''}`;
+                card.id = `question-${q.id}`;
+                
+                let content = `
+                    <div class="question-number">${q.id}</div>
+                    <div class="question-title">${q.title}</div>
+                `;
+                
+                if (q.type === 'choice') {
+                    content += '<div class="options">';
+                    q.options.forEach((opt, i) => {
+                        content += `<div class="option" onclick="selectOption(${q.id}, ${i}, this)">${opt}</div>`;
+                    });
+                    content += '</div>';
+                } else {
+                    content += `<input type="text" class="contact-section" style="width:100%;margin-top:10px;padding:15px;border:2px solid #eee;border-radius:12px;" placeholder="请输入" onchange="saveTextAnswer(${q.id}, this.value)">`;
+                }
+                
+                content += `
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-prev" onclick="prevQuestion()" ${index === 0 ? 'disabled' : ''}>上一题</button>
+                        <button type="button" class="btn btn-next" onclick="nextQuestion()">${index === questions.length - 1 ? '查看结果' : '下一题'}</button>
+                    </div>
+                `;
+                
+                card.innerHTML = content;
+                form.appendChild(card);
+            });
+        }
+
+        // 选择选项
+        function selectOption(qId, optIndex, element) {
+            const card = document.getElementById(`question-${qId}`);
+            card.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            answers[qId] = optIndex;
+        }
+
+        // 保存文本答案
+        function saveTextAnswer(qId, value) {
+            answers[qId] = value;
+        }
+
+        // 下一题
+        function nextQuestion() {
+            const q = questions[currentQuestion];
+            
+            // 验证是否已作答
+            if (answers[q.id] === undefined || answers[q.id] === '') {
+                alert('请先完成本题');
+                return;
+            }
+            
+            if (currentQuestion < questions.length - 1) {
+                document.getElementById(`question-${questions[currentQuestion].id}`).classList.remove('active');
+                currentQuestion++;
+                document.getElementById(`question-${questions[currentQuestion].id}`).classList.add('active');
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        // 上一题
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                document.getElementById(`question-${questions[currentQuestion].id}`).classList.remove('active');
+                currentQuestion--;
+                document.getElementById(`question-${questions[currentQuestion].id}`).classList.add('active');
+                updateProgress();
+            }
+        }
+
+        // 更新进度
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${currentQuestion}/${questions.length}`;
+        }
+
+        // 计算分数
+        function calculateScore() {
+            let score = 0;
+            questions.forEach(q => {
+                if (q.type === 'choice' && !q.noScore && answers[q.id] !== undefined) {
+                    score += answers[q.id]; // A=0, B=1, C=2, D=3, E=4
+                }
+            });
+            return score;
+        }
+
+        // 显示结果
+        function showResult() {
+            const score = calculateScore();
+            
+            document.getElementById('progressBar').style.display = 'none';
+            document.getElementById('surveyForm').style.display = 'none';
+            document.getElementById('resultPage').style.display = 'block';
+            
+            document.getElementById('finalScore').textContent = score;
+            
+            let level, desc;
+            if (score <= 50) {
+                level = '🌿 症状轻微';
+                desc = `恭喜您！您的更年期症状处于轻微水平。\n\n建议：保持健康的生活方式，规律作息，适量运动，均衡饮食。可适当补充藻巢进行预防性卵巢养护。\n\n定期体检，关注身体变化。`;
+            } else if (score <= 100) {
+                level = '🌻 轻度症状';
+                desc = `您的更年期症状处于轻度水平。\n\n建议：开始关注身体变化，调整生活方式。规律作息、适量运动、均衡饮食很重要。\n\n建议使用藻巢进行科学的营养干预，帮助缓解症状，延缓卵巢衰老进程。`;
+            } else if (score <= 150) {
+                level = '🍂 中度症状';
+                desc = `您的更年期症状已达中度水平，可能影响生活质量。\n\n建议：及时就医评估，检测激素水平。同时配合藻巢营养支持，多管齐下改善症状。\n\n医生可能会建议激素替代疗法或中医药调理，藻巢可作为重要的辅助营养支持。`;
+            } else {
+                level = '🔴 中重度症状';
+                desc = `您的更年期症状较为严重，需要重点关注。\n\n建议：尽快就医进行全面检查（激素水平、骨密度、心血管等）。\n\n制定系统的治疗方案，藻巢可作为重要的辅助营养支持，帮助改善卵巢功能，缓解症状。\n\n请勿延误治疗时机。`;
+            }
+            
+            document.getElementById('resultLevel').textContent = level;
+            document.getElementById('resultDesc').innerHTML = desc.replace(/\n/g, '<br>');
+        }
+
+        // 提交结果
+        function submitResult() {
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+            const wechat = document.getElementById('userWechat').value;
+            
+            if (!name || !phone) {
+                alert('请填写姓名和手机号码');
+                return;
+            }
+            
+            // 这里可以发送到后端服务器
+            const data = {
+                name: name,
+                phone: phone,
+                wechat: wechat,
+                score: calculateScore(),
+                answers: answers,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('提交数据：', data);
+            
+            // 显示成功提示
+            alert('提交成功！我们的健康顾问将在24小时内与您联系。');
+            
+            // 这里添加实际的提交逻辑
+            // fetch('/api/submit', { method: 'POST', body: JSON.stringify(data) });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initSurvey);
+    </script>
+</body>
+</html>
